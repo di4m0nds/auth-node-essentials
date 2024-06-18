@@ -1,0 +1,287 @@
+<% if (typeof username === 'undefined') { %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Register</title>
+    <style>
+        body, html {
+            padding: 8% 20%;
+            height: 60%;
+            background-color: #f5f5f7;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .container {
+            width: 100%;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #6e6e73;
+        }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #d2d2d7;
+            border-radius: 8px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #0071e3;
+            color: #fff;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #005bb5;
+        }
+        .switch {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .switch a {
+            color: #0071e3;
+            text-decoration: none;
+        }
+        .switch a:hover {
+            text-decoration: underline;
+        }
+        .error {
+            color: red;
+            margin-bottom: 20px;
+        }
+        .success {
+            color: limegreen;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 id="form-title">Login</h2>
+        <form id="auth-form" action="/login" method="POST">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+
+            <div class="error" id="error-message"></div>
+            <div class="success" id="success-message"></div>
+
+            <button type="submit">Login</button>
+        </form>
+        <div class="switch">
+            <span id="switch-text">Don't have an account? <a href="#" id="switch-link">Register</a></span>
+        </div>
+    </div>
+
+    <script>
+        const formTitle = document.getElementById('form-title');
+        const authForm = document.getElementById('auth-form');
+        const switchText = document.getElementById('switch-text');
+
+        const errorMessage = document.getElementById('error-message');
+        const successMessage = document.getElementById('success-message');
+
+        function toggleForm(e) {
+            e.preventDefault();
+            if (authForm.action.endsWith('/login')) {
+                formTitle.textContent = 'Register';
+                authForm.action = '/register';
+                switchText.innerHTML = 'Already have an account? <a href="#" id="switch-link">Login</a>';
+                document.querySelector('button').textContent = 'Register';
+            } else {
+                formTitle.textContent = 'Login';
+                authForm.action = '/login';
+                switchText.innerHTML = 'Don\'t have an account? <a href="#" id="switch-link">Register</a>';
+                document.querySelector('button').textContent = 'Login';
+            }
+            attachSwitchLinkEvent();
+        }
+
+        function attachSwitchLinkEvent() {
+            const switchLink = document.getElementById('switch-link');
+            switchLink.addEventListener('click', toggleForm);
+        }
+
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMessage.textContent = '';
+            successMessage.textContent = '';
+
+            const formData = new FormData(authForm);
+            const data = Object.fromEntries(formData);
+
+            try {
+                const response = await fetch(authForm.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Something went wrong');
+                }
+
+                if (authForm.action.endsWith('/login')) {
+                    successMessage.textContent = "✅ " + result.message + " Redirecting...";
+                    setTimeout(() => {
+                        window.location.href = '/protected'; // Redirect to a protected route or another page
+                    }, 3000)
+                } else {
+                    successMessage.textContent = "✅ " + result.message;
+                }
+            } catch (error) {
+                errorMessage.textContent = "❌ " + error.message;
+            }
+        });
+
+        attachSwitchLinkEvent();
+    </script>
+</body>
+</html>
+
+<% } else { %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5f7;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            font-size: 32px;
+            font-weight: 600;
+            color: #1d1d1f;
+        }
+        p {
+            font-size: 18px;
+            color: #6e6e73;
+        }
+        a, button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background-color: #0071e3;
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        a:hover {
+            background-color: #005bb5;
+        }
+
+        .links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .logout {
+            background-color: #6e6e73;
+        }
+        .logout:hover {
+            background-color: #434346;
+        }
+        .error {
+            color: red;
+            margin-bottom: 20px;
+        }
+        .success {
+            color: limegreen;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="">
+        <h1>Welcome, <%= username %>!</h1>
+        <p>We are glad to see you again.</p>
+        <div class="links">
+            <a href="/protected">Protected</a>
+            <form id="logout-form" action="/logout" method="POST">
+                <button type="submit" id="logoutBtn" class="logout">Logout</button>
+            </form>
+            <div class="error" id="error-message"></div>
+            <div class="success" id="success-message"></div>
+        </div>
+    </div>
+    <script>
+        const logoutForm = document.getElementById('logout-form')
+
+        errorMessage = document.getElementById('error-message');
+        successMessage = document.getElementById('success-message');
+
+        logoutForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            errorMessage.textContent = '';
+            successMessage.textContent = '';
+
+            try {
+                const response = await fetch(logoutForm.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Something went wrong');
+                }
+
+                successMessage.textContent = "✅ " + result.message + " Redirecting...";
+                setTimeout(() => {
+                    window.location.href = '/'; // Redirect to a protected route or another page
+                }, 3000)
+            } catch (error) {
+                errorMessage.textContent = "❌ " + error.message;
+            }
+        });
+    </script>
+</body>
+</html>
+<% } %>
