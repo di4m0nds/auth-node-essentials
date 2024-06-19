@@ -1,6 +1,7 @@
-<% if (typeof username === 'undefined') { %>
 <!DOCTYPE html>
 <html lang="en">
+
+<% if (typeof username === 'undefined') { %>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -164,8 +165,7 @@
 </html>
 
 <% } else { %>
-<!DOCTYPE html>
-<html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -251,13 +251,13 @@
     <script>
         const logoutForm = document.getElementById('logout-form')
 
-        errorMessage = document.getElementById('error-message');
-        successMessage = document.getElementById('success-message');
+        let errorMsg = document.getElementById('error-message');
+        let successMsg = document.getElementById('success-message');
 
         logoutForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            errorMessage.textContent = '';
-            successMessage.textContent = '';
+            errorMsg.textContent = '';
+            successMsg.textContent = '';
 
             try {
                 const response = await fetch(logoutForm.action, {
@@ -273,12 +273,12 @@
                     throw new Error(result.error || 'Something went wrong');
                 }
 
-                successMessage.textContent = "✅ " + result.message + " Redirecting...";
+                successMsg.textContent = "✅ " + result.message + " Redirecting...";
                 setTimeout(() => {
                     window.location.href = '/'; // Redirect to a protected route or another page
                 }, 3000)
             } catch (error) {
-                errorMessage.textContent = "❌ " + error.message;
+                errorMsg.textContent = "❌ " + error.message;
             }
         });
     </script>
