@@ -7,5 +7,7 @@ export const {
   SECRET_TOKEN_KEY = 'magic-key-for-the-jwt',
 
   TEACHER_NAME = 'midudev',
-  TEACHER_LINK = 'https://github.com/midudev'
+  TEACHER_LINK = 'https://github.com/midudev',
+
+  DEFAULT_ERROR_MSG = 'Something unexpected happen. Try again later.'
 } = process.env
